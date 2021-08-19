@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/layout/cubit/socialstatus.dart';
 import 'package:social_app/model/user_model.dart';
+import 'package:social_app/module/NewPost/newpost_screen.dart';
 import 'package:social_app/module/chats/chats_screen.dart';
 import 'package:social_app/module/feeds/feeds_screen.dart';
 import 'package:social_app/module/settings/settiings_screen.dart';
@@ -26,7 +27,7 @@ class SocialCubit extends Cubit<SocialStates> {
 
     FirebaseFirestore.instance
         .collection('users')
-        .doc('t6GZUN6gdfq6LUgT6hXq')
+        .doc(uId)
         .get()
         .then((value) {
       print(value.data());
@@ -52,19 +53,19 @@ class SocialCubit extends Cubit<SocialStates> {
   List<Widget> screens = [
     FeedsScreen(),
     ChatsScreen(),
-    
+    NewPostScreen(),
     UsersScreen(),
     SettingsScreen()
   ];
 
-  List<String> titles = ['Home', 'Chat','Users', 'Settings'];
+  List<String> titles = ['Home', 'Chat','Add Post','Users', 'Settings'];
 
   void changeBottomNav(int index) {
     
     if (index == 2) {
       emit(NewPostState());
     } else {
-      currentIndex = index > 2 ? index-1:index;
+      currentIndex = index;
       emit(ChangeBottomNavState());
     }
   }

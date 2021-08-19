@@ -49,6 +49,8 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
       email: email,
       phone: phone,
       uId: uId,
+      image: 'https://thumbs.dreamstime.com/z/default-avatar-profile-icon-grey-photo-placeholder-male-default-profile-gray-person-picture-isolated-white-background-good-man-102846161.jpg',
+      bio: 'write your bio...',
       isEmailVerified: false
     );
 
