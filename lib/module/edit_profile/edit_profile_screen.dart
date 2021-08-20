@@ -12,25 +12,34 @@ import 'package:image_picker/image_picker.dart';
 class EditProfileScreen extends StatelessWidget {
   var nameController = TextEditingController();
   var bioController = TextEditingController();
+  var phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
         listener: (context, state) {},
         builder: (context, state) {
-          var userModel = SocialCubit.get(context).model;
+          var userModel = SocialCubit.get(context).userModel;
           var profileImage = SocialCubit.get(context).profileImage;
           var coverImage = SocialCubit.get(context).coverImage;
 
           nameController.text = userModel!.name!;
           bioController.text = userModel.bio!;
+          phoneController.text = userModel.phone!;
 
           return Scaffold(
             appBar: defaultAppBar(
                 context: context,
                 title: 'Edit Profile',
                 actions: [
-                  TextButton(onPressed: () {}, child: Text('Update')),
+                  TextButton(
+                      onPressed: () {
+                        SocialCubit.get(context).updateUser(
+                            name: nameController.text,
+                            phone: phoneController.text,
+                            bio: bioController.text);
+                      },
+                      child: Text('Update')),
                   SizedBox(
                     width: 15,
                   )
@@ -144,7 +153,20 @@ class EditProfileScreen extends StatelessWidget {
                         }
                       },
                       label: 'Bio',
-                      prefix: IconBroken.Info_Circle)
+                      prefix: IconBroken.Info_Circle),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  defaultFormField(
+                      controller: phoneController,
+                      type: TextInputType.phone,
+                      validate: (value) {
+                        if (value!.isEmpty) {
+                          return 'phone number must not be empty';
+                        }
+                      },
+                      label: 'Phone',
+                      prefix: IconBroken.Call)
                 ],
               ),
             ),
