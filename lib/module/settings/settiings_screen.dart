@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/layout/cubit/socialCubit.dart';
 import 'package:social_app/layout/cubit/socialstatus.dart';
+import 'package:social_app/module/edit_profile/edit_profile_screen.dart';
 import 'package:social_app/shared/componants/components.dart';
 import 'package:social_app/shared/styles/icon.dart';
 
@@ -45,8 +46,7 @@ class SettingsScreen extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 60,
                         backgroundColor: Colors.grey[300],
-                        backgroundImage: NetworkImage(
-                           '${userModel.image}'),
+                        backgroundImage: NetworkImage('${userModel.image}'),
                       ),
                     ),
                   ],
@@ -141,15 +141,21 @@ class SettingsScreen extends StatelessWidget {
               Row(children: [
                 Expanded(
                     child: OutlinedButton(
-                      onPressed: (){},
-                      child: Text('Add Photos'),
-                    )
-                    ),
-                    SizedBox(width: 10,),
-                    OutlinedButton(
-                      onPressed: (){},
-                      child: Icon(IconBroken.Edit,size: 18,),
-                    )
+                  onPressed: () {},
+                  child: Text('Add Photos'),
+                )),
+                SizedBox(
+                  width: 10,
+                ),
+                OutlinedButton(
+                  onPressed: () {
+                    navigateTo(context, EditProfileScreen());
+                  },
+                  child: Icon(
+                    IconBroken.Edit,
+                    size: 18,
+                  ),
+                )
               ])
             ],
           ),

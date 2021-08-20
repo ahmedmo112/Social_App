@@ -17,3 +17,13 @@ class SocialGetUserErrorState extends SocialStates {
 class ChangeBottomNavState extends SocialStates{}
 
 class NewPostState extends SocialStates{}
+
+class SocialProfileImagePickedSuccessState extends SocialStates {}
+
+class SocialProfileImagePickedErrorState extends SocialStates {}
+
+
+class SocialCoverImagePickedSuccessState extends SocialStates {}
+
+class SocialCoverImagePickedErrorState extends SocialStates {}
+

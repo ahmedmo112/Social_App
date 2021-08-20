@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:social_app/shared/styles/icon.dart';
 
 //! ////////////////////////////////////////////
 void navigateTo(context, widget) => Navigator.push(
@@ -121,90 +122,19 @@ Color chooseToastColor(ToastStates state) {
   return color;
 }
 
-
-
-
-
-
-
-
-
-
-// Widget buildArticleItem(dynamic article, context) => InkWell(
-//       onTap: () {
-//         navigateTo(context, WebViewScreen(article['url']));
-//       },
-//       child: Padding(
-//         padding: const EdgeInsets.all(20.0),
-//         child: Row(
-//           children: [
-//             Container(
-//               height: 120,
-//               width: 120,
-//               decoration: BoxDecoration(
-//                 borderRadius: BorderRadius.circular(10),
-//                 image: DecorationImage(
-//                     image: NetworkImage('${article['urlToImage']}'),
-//                     fit: BoxFit.cover),
-//               ),
-//             ),
-//             SizedBox(
-//               width: 20.0,
-//             ),
-//             Expanded(
-//               child: Container(
-//                 height: 120.0,
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.start,
-
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-
-//                   // mainAxisSize: MainAxisSize.min,
-
-//                   children: [
-//                     Expanded(
-//                       child: Text(
-//                         '${article['title']}',
-//                         maxLines: 3,
-//                         overflow: TextOverflow.ellipsis,
-//                         style: Theme.of(context).textTheme.bodyText1,
-//                       ),
-//                     ),
-//                     Text(
-//                       '${article['publishedAt']}',
-//                       style: TextStyle(
-//                         color: Colors.grey,
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-
-// Widget articleBuilder(list, context, {isSearch = false}) => 
-//        list.length > 0?
-//        ListView.separated(
-//           physics: BouncingScrollPhysics(),
-//           itemBuilder: (context, index) =>
-//               buildArticleItem(list[index], context),
-//           separatorBuilder: (context, index) => Padding(
-//                 padding: const EdgeInsetsDirectional.only(start: 20),
-//                 child: Container(
-//                   width: double.infinity,
-//                   height: 1,
-//                   color: Colors.grey[300],
-//                 ),
-//               ),
-//           itemCount: 
-//           list.length
-//           ):
-//        isSearch
-//           ? Container()
-//           : Center(
-//               child: CircularProgressIndicator(),
-//             );
-    
+PreferredSizeWidget defaultAppBar({
+  required BuildContext context,
+  String? title,
+  List<Widget>? actions,
+}) =>
+    AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(IconBroken.Arrow___Left_2)
+            ),
+            titleSpacing: 5.0,
+            title: Text(title??''),
+            actions: actions
+            );
