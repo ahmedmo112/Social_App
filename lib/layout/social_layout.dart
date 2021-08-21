@@ -27,11 +27,15 @@ class SocialLayout extends StatelessWidget {
           appBar: AppBar(actions: [
             IconButton(
                 onPressed: () {
-                  // SocialCubit.get(context).signout();
-                  // navigateAndFinish(context, SocialLoginScreen());
+                  SocialCubit.get(context).signout();
+                  navigateAndFinish(context, SocialLoginScreen());
                 },
                 icon: Icon(IconBroken.Notification)),
-            IconButton(onPressed: () {}, icon: Icon(IconBroken.Search)),
+            IconButton(
+                onPressed: () {
+                
+                },
+                icon: Icon(IconBroken.Search)),
           ], title: Text(cubit.titles[cubit.currentIndex])),
           body: cubit.screens[cubit.currentIndex],
           bottomNavigationBar: BottomNavigationBar(

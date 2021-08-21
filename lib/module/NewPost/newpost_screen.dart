@@ -18,6 +18,7 @@ class NewPostScreen extends StatelessWidget {
       listener: (context, state) {
         if (state is SocialCreatePostSuccessState) {
           Navigator.pop(context);
+          SocialCubit.get(context).removePostImage();
         }
       },
       builder: (context, state) {
@@ -56,14 +57,14 @@ class NewPostScreen extends StatelessWidget {
                       CircleAvatar(
                         radius: 25,
                         backgroundImage: NetworkImage(
-                            'https://image.freepik.com/free-photo/surprised-female-with-dark-hair-pointing-both-index-fingers-up-with-excited-facial-expression-isolated-blue-wall_176532-14083.jpg'),
+                            '${SocialCubit.get(context).userModel!.image}'),
                       ),
                       SizedBox(
                         width: 15.0,
                       ),
                       Expanded(
                         child: Text(
-                          'Ahmed Mohamed',
+                          '${SocialCubit.get(context).userModel!.name}',
                           style: TextStyle(height: 1.4),
                         ),
                       ),

@@ -62,6 +62,9 @@ class SocialCubit extends Cubit<SocialStates> {
   List<String> titles = ['Home', 'Chat', 'Add Post', 'Users', 'Settings'];
 
   void changeBottomNav(int index) {
+    if (index == 1) {
+      getAllUsers();
+    }
     if (index == 2) {
       emit(NewPostState());
     } else {
@@ -301,7 +304,7 @@ class SocialCubit extends Cubit<SocialStates> {
   }) {
     PostModel postModel = PostModel(
         name: userModel!.name,
-        //image: userModel!.image,
+        image: userModel!.image,
         uId: userModel!.uId,
         dateTime: datetime,
         text: text,
@@ -313,6 +316,8 @@ class SocialCubit extends Cubit<SocialStates> {
         .collection('posts')
         .add(postModel.toMap())
         .then((value) {
+      posts = [];
+      getPosts();
       emit(SocialCreatePostSuccessState());
     }).catchError((e) {
       emit(SocialCreatePostErrorState());
@@ -351,5 +356,24 @@ class SocialCubit extends Cubit<SocialStates> {
     }).catchError((e) {
       emit(SocialLikePostErrorState(e.toString()));
     });
+  }
+
+  //! Chat
+  List<UserModel> users = [];
+
+  void getAllUsers() {
+    emit(SocialGetAllUsersLoadingState());
+    if (users.length == 0) {
+      FirebaseFirestore.instance.collection('users').get().then((value) {
+        value.docs.forEach((element) {
+          if (element.data()['uId'] != userModel!.uId) {
+            users.add(UserModel.fromJson(element.data()));
+          }
+        });
+        emit(SocialGetAllUsersSuccessState());
+      }).catchError((e) {
+        emit(SocialGetAllUsersErrorState(e.toString()));
+      });
+    }
   }
 }

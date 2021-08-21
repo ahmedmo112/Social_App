@@ -20,7 +20,8 @@ class FeedsScreen extends StatelessWidget {
         return Conditional.single(
             context: context,
             conditionBuilder: (context) =>
-                SocialCubit.get(context).posts.length > 0 && SocialCubit.get(context).userModel != null,
+               SocialCubit.get(context).posts.length > 0 &&
+                 SocialCubit.get(context).userModel != null,
             widgetBuilder: (context) => SingleChildScrollView(
                   physics: BouncingScrollPhysics(),
                   child: Column(
@@ -98,7 +99,7 @@ class FeedsScreen extends StatelessWidget {
                   radius: 25,
                   backgroundColor: Colors.grey[300],
                   backgroundImage: NetworkImage(
-                      '${SocialCubit.get(context).userModel!.image}'),
+                      '${model.image}'),
                 ),
                 SizedBox(
                   width: 15.0,
@@ -111,7 +112,7 @@ class FeedsScreen extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                '${SocialCubit.get(context).userModel!.name}',
+                                '${model.name}',
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(height: 1.4),
                               ),
@@ -316,7 +317,7 @@ class FeedsScreen extends StatelessWidget {
                         IconBroken.Heart,
                         size: 17,
                         color: Colors.red,
-                        
+
                       ),
                       Text('Like', style: Theme.of(context).textTheme.caption)
                     ],
