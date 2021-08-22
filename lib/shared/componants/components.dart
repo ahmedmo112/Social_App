@@ -11,7 +11,7 @@ void navigateTo(context, widget) => Navigator.push(
     );
 
 void navigateAndFinish(context, widget) => Navigator.pushAndRemoveUntil(
-    context, MaterialPageRoute(builder: (context) => widget), (route) => false);
+    context, MaterialPageRoute(builder: (context) => widget), (route) => false);   
 //! ///////////////////////////////////////////
 
 Widget defaultButton({

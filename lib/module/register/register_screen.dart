@@ -120,7 +120,9 @@ class RegisterScreen extends StatelessWidget {
                                       name: nameController.text,
                                       email: emailController.text,
                                       password: passwordController.text,
-                                      phone: phoneController.text);
+                                      phone: phoneController.text,
+                                      context: context
+                                      );
                                 }
                               },
                               text: 'register',

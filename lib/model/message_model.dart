@@ -1,44 +1,33 @@
-class UserModel {
-  String? name;
-  String? email;
-  String? phone;
-  String? uId;
-  String? image;
-  String? cover;
-  String? bio;
-  bool? isEmailVerified;
+class MessageModel {
+  String? senderId;
+  String? reciverId;
+  String? dateTime;
+  String? text;
+  
+  
+  MessageModel(
+      {
+        this.senderId,
+        this.reciverId,
+        this.dateTime,
+        this.text,
+      });
 
-  UserModel(
-      {this.name,
-      this.email,
-      this.phone,
-      this.uId,
-      this.image,
-      this.cover,
-      this.bio,
-      this.isEmailVerified});
-
-  UserModel.fromJson(Map<String, dynamic>? json) {
-    name = json!['name'];
-    email = json['email'];
-    phone = json['phone'];
-    uId = json['uId'];
-    image = json['image'];
-    cover = json['cover'];
-    bio = json['bio'];
-    isEmailVerified = json['isEmailVerified'];
+  MessageModel.fromJson(Map<String, dynamic>? json) {
+    senderId = json!['senderId'];
+    reciverId = json['reciverId'];
+    dateTime = json['dateTime'];
+    text = json['text'];
+   
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
-      'email': email,
-      'phone': phone,
-      'uId': uId,
-      'image': image,
-      'cover': cover,
-      'bio': bio,
-      'isEmailVerified': isEmailVerified
+      'senderId': senderId,
+      'reciverId': reciverId,
+      'dateTime': dateTime,
+      'text': text,
+     
     };
   }
 }

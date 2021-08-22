@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:social_app/layout/cubit/socialCubit.dart';
 import 'package:social_app/model/user_model.dart';
 import 'package:social_app/module/register/cubit/statusRegister.dart';
 
@@ -18,6 +19,7 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
     required String email,
     required String password,
     required String phone,
+    required BuildContext context
   }) {
     emit(SocialRegisterLoadingState());
 
@@ -30,7 +32,8 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
         name: name,
          email: email,
           phone: phone,
-           uId: value.user!.uid
+           uId: value.user!.uid,
+           context: context
            );
     //  emit(SocialRegisterSuccessState());
     }).catchError((e) {
@@ -43,6 +46,7 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
     required String email,
     required String phone,
     required String uId,
+    required BuildContext context
   }) {
     UserModel model = UserModel(
       name: name,
@@ -60,6 +64,9 @@ class SocialRegisterCubit extends Cubit<SocialRegisterStates> {
         .doc(uId)
         .set(model.toMap())
         .then((value) {
+          //! for test re-get data 
+      //     SocialCubit.get(context).getUserData();
+      // SocialCubit.get(context).getPosts();
       emit(SocialCreateUserSuccessState(uId));
     }).catchError((e) {
       print(e.toString());

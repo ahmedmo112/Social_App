@@ -70,7 +70,8 @@ class FeedsScreen extends StatelessWidget {
                   ),
                 ),
             fallbackBuilder: (context) => Center(
-                  child: SizedBox(
+                  child:
+                   SizedBox(
                     height: 100,
                     width: 100,
                     child: LoadingIndicator(
