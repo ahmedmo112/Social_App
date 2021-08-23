@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:social_app/layout/cubit/socialCubit.dart';
 import 'package:social_app/layout/cubit/socialstatus.dart';
@@ -141,8 +142,11 @@ class SettingsScreen extends StatelessWidget {
               Row(children: [
                 Expanded(
                     child: OutlinedButton(
-                  onPressed: () {},
-                  child: Text('Add Photos'),
+                  onPressed: () {
+                    SocialCubit.get(context).signout();
+                  SystemNavigator.pop();
+                  },
+                  child: Text('Sign out'),
                 )),
                 SizedBox(
                   width: 10,

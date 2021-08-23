@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
         listener: (context, state) {},
         builder: (context, state) {
           return MaterialApp(
-              title: 'Shop',
+              title: 'Social',
               //! //////////// //app theme ////////
               //* //////Light////////////
               theme: lightTheme,

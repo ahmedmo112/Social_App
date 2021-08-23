@@ -1,77 +1,93 @@
 // ignore_for_file: prefer_const_constructors
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:social_app/layout/cubit/socialCubit.dart';
 import 'package:social_app/layout/cubit/socialstatus.dart';
+import 'package:social_app/model/comment_model.dart';
 import 'package:social_app/model/post_model.dart';
 import 'package:social_app/shared/styles/colors.dart';
 import 'package:social_app/shared/styles/icon.dart';
 
 class FeedsScreen extends StatelessWidget {
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+  var commentController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        
+      },
       builder: (context, state) {
         return Conditional.single(
             context: context,
             conditionBuilder: (context) =>
-               SocialCubit.get(context).posts.length > 0 &&
-                 SocialCubit.get(context).userModel != null,
-            widgetBuilder: (context) => SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      Card(
-                        elevation: 5.0,
-                        margin: EdgeInsets.all(8.0),
-                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                        child: Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            Image(
-                              image: NetworkImage(
-                                  'https://image.freepik.com/free-photo/horizontal-shot-smiling-curly-haired-woman-indicates-free-space-demonstrates-place-your-advertisement-attracts-attention-sale-wears-green-turtleneck-isolated-vibrant-pink-wall_273609-42770.jpg'),
-                              fit: BoxFit.cover,
-                              height: 150,
-                              width: double.infinity,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Communicate with friends',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .subtitle1!
-                                    .copyWith(color: Colors.white),
+                SocialCubit.get(context).posts.isNotEmpty &&
+                SocialCubit.get(context).userModel != null,
+            widgetBuilder: (context) => RefreshIndicator(
+                  onRefresh: () {
+                    return Future.delayed(Duration(seconds: 2), () {
+                      //SocialCubit.get(context).getPosts();
+                      SocialCubit.get(context).refreshHome();
+                    });
+                  },
+                  child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        Card(
+                          elevation: 5.0,
+                          margin: EdgeInsets.all(8.0),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              Image(
+                                image: NetworkImage(
+                                    'https://image.freepik.com/free-photo/horizontal-shot-smiling-curly-haired-woman-indicates-free-space-demonstrates-place-your-advertisement-attracts-attention-sale-wears-green-turtleneck-isolated-vibrant-pink-wall_273609-42770.jpg'),
+                                fit: BoxFit.cover,
+                                height: 150,
+                                width: double.infinity,
                               ),
-                            ),
-                          ],
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Communicate with friends',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .subtitle1!
+                                      .copyWith(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) => buildPostItem(
-                            SocialCubit.get(context).posts[index], context,index),
-                        separatorBuilder: (context, index) => SizedBox(
-                          height: 10,
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) => buildPostItem(
+                              SocialCubit.get(context).posts[index],
+                              context,
+                              index,state),
+                          separatorBuilder: (context, index) => SizedBox(
+                            height: 10,
+                          ),
+                          itemCount: SocialCubit.get(context).posts.length,
                         ),
-                        itemCount: SocialCubit.get(context).posts.length,
-                      ),
-                      SizedBox(
-                        height: 15,
-                      )
-                    ],
+                        SizedBox(
+                          height: 15,
+                        )
+                      ],
+                    ),
                   ),
                 ),
             fallbackBuilder: (context) => Center(
-                  child:
-                   SizedBox(
+                  child: SizedBox(
                     height: 100,
                     width: 100,
                     child: LoadingIndicator(
@@ -85,7 +101,7 @@ class FeedsScreen extends StatelessWidget {
     );
   }
 
-  Widget buildPostItem(PostModel model, context ,int index) => Card(
+  Widget buildPostItem(PostModel model, context, int index,state) => Card(
       elevation: 6.0,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       margin: EdgeInsets.symmetric(horizontal: 8.0),
@@ -99,8 +115,7 @@ class FeedsScreen extends StatelessWidget {
                 CircleAvatar(
                   radius: 25,
                   backgroundColor: Colors.grey[300],
-                  backgroundImage: NetworkImage(
-                      '${model.image}'),
+                  backgroundImage: NetworkImage('${model.image}'),
                 ),
                 SizedBox(
                   width: 15.0,
@@ -265,7 +280,7 @@ class FeedsScreen extends StatelessWidget {
                             size: 17,
                             color: Colors.amber,
                           ),
-                          Text('0 Comments',
+                          Text('${SocialCubit.get(context).postCommentsNum[index]} Comments',
                               style: Theme.of(context).textTheme.caption)
                         ],
                       ),
@@ -286,7 +301,19 @@ class FeedsScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+
+                      SocialCubit.get(context).getcomments(
+                          postId: SocialCubit.get(context).postID[index]);
+                         Timer(Duration(milliseconds: 500), ()=> 
+                       
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) =>
+                              buildCommentBottomSheet(context, index,state))
+                    )
+                     ;
+                    },
                     child: Row(
                       children: [
                         CircleAvatar(
@@ -318,7 +345,6 @@ class FeedsScreen extends StatelessWidget {
                         IconBroken.Heart,
                         size: 17,
                         color: Colors.red,
-
                       ),
                       Text('Like', style: Theme.of(context).textTheme.caption)
                     ],
@@ -329,4 +355,120 @@ class FeedsScreen extends StatelessWidget {
           ],
         ),
       ));
+
+  Widget buildCommentBottomSheet(context, index,state) => Container(
+      height: 600,
+      color: Color(0xFF737373),
+      child: Container(
+          //height: 500,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(30.0),
+                  topRight: const Radius.circular(30.0))),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child:Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                
+                Expanded(
+                  child:
+                  SocialCubit.get(context).comments.length > 0?
+                  
+                
+            ListView.separated(
+                      physics: BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index)=> buildCommentbody(SocialCubit.get(context).comments[index]),
+                      separatorBuilder: (context, index) => SizedBox(
+                            height: 20,
+                          ),
+                      itemCount: SocialCubit.get(context).comments.length)
+                      :Container(
+                        width: 200,
+                        child: Center(child: Text('Empty')) )
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: Colors.grey.shade300, width: 1),
+                            borderRadius: BorderRadius.circular(15)),
+                        child: TextFormField(
+                          controller: commentController,
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'type your comment here ...'),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: defultColor,
+                      child: IconButton(
+                        onPressed: () {
+                          SocialCubit.get(context).sendCommentPost(
+                              SocialCubit.get(context).postID[index],
+                              commentController.text);
+                          commentController.clear();
+                          // SocialCubit.get(context).getcomments(
+                          //     postId: SocialCubit.get(context).postID[index]);
+                        },
+                        icon: Icon(
+                          IconBroken.Chat,
+                          size: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
+                )
+              ],
+            ),
+              
+               )
+            
+          )
+             
+              
+              );
+
+
+              Widget buildCommentbody( CommentModel model)=> Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 25,
+                              backgroundColor: Colors.grey[300],
+                              backgroundImage: NetworkImage(
+                                 model
+                                      .image
+                                      .toString()),
+                            ),
+                            SizedBox(
+                              width: 10.0,
+                            ),
+                            Container(
+                              width: 250,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: defultColor.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(model
+                                  .text
+                                  .toString()),
+                            )
+                          ],
+                        );
 }

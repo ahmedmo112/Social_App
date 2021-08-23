@@ -1,4 +1,5 @@
 // ignore_for_file: file_names
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:social_app/layout/cubit/socialstatus.dart';
+import 'package:social_app/model/comment_model.dart';
 import 'package:social_app/model/message_model.dart';
 import 'package:social_app/model/post_model.dart';
 import 'package:social_app/model/user_model.dart';
@@ -325,7 +327,7 @@ class SocialCubit extends Cubit<SocialStates> {
         .add(postModel.toMap())
         .then((value) {
       posts = [];
-      getPosts();
+      //getPosts();
       emit(SocialCreatePostSuccessState());
     }).catchError((e) {
       emit(SocialCreatePostErrorState());
@@ -335,16 +337,21 @@ class SocialCubit extends Cubit<SocialStates> {
   List<PostModel> posts = [];
   List<String> postID = [];
   List<int> likes = [];
+  List<int> postCommentsNum = [];
 
   void getPosts() {
     emit(SocialGetPostLoadingState());
 
     FirebaseFirestore.instance.collection('posts').get().then((value) {
       value.docs.forEach((element) {
-        element.reference.collection('likes').get().then((value) {
-          likes.add(value.docs.length);
-          postID.add(element.id);
-          posts.add(PostModel.fromJson(element.data()));
+        element.reference.collection('likes').get().then((valuelike) {
+          element.reference.collection("comments").get().then((value) {
+            likes.add(valuelike.docs.length);
+            postCommentsNum.add(value.docs.length);
+            postID.add(element.id);
+            posts.add(PostModel.fromJson(element.data()));
+            emit(SocialGetPostSuccessState());
+          });
         }).catchError((e) {});
       });
       emit(SocialGetPostSuccessState());
@@ -352,9 +359,11 @@ class SocialCubit extends Cubit<SocialStates> {
       emit(SocialGetPostErrorState(e.toString()));
     });
   }
- 
- //? create method to get realTime likes like [likePost] with change set with snapshot like [getMessage]
- 
+
+  void test() {}
+
+  //? create method to get realTime likes like [likePost] with change set to snapshot like [getMessage]
+
   void likePost(String? postID) {
     FirebaseFirestore.instance
         .collection('posts')
@@ -365,6 +374,43 @@ class SocialCubit extends Cubit<SocialStates> {
       emit(SocialLikePostSuccessState());
     }).catchError((e) {
       emit(SocialLikePostErrorState(e.toString()));
+    });
+  }
+
+  void sendCommentPost(String? postID, String? text) {
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postID)
+        .collection('comments')
+        .doc()
+        .set({'postId': postID, 'text': text, 'image': userModel!.image}).then(
+            (value) {
+      emit(SocialCommentPostSuccessState());
+    }).catchError((e) {
+      emit(SocialCommentPostErrorState());
+    });
+  }
+
+  List<CommentModel> comments = [];
+  CommentModel? commentModel;
+
+  void getcomments({required String postId}) {
+    emit(SocialGetCommentPostLoadingState());
+    comments = [];
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .collection('comments')
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        commentModel = CommentModel.fromJson(element.data());
+        comments.add(commentModel!);
+      });
+
+      emit(SocialGetCommentPostSuccessState());
+    }).catchError((e) {
+      emit(SocialGetCommentPostErrorState());
     });
   }
 
@@ -426,6 +472,7 @@ class SocialCubit extends Cubit<SocialStates> {
   }
 
   List<MessageModel> messsage = [];
+  // var scroll = ScrollController();
 
   void getMessage({required String reciverId}) {
     FirebaseFirestore.instance
@@ -441,7 +488,20 @@ class SocialCubit extends Cubit<SocialStates> {
       event.docs.forEach((element) {
         messsage.add(MessageModel.fromJson(element.data()));
       });
+
       emit(SocialGetMessageSuccessState());
     });
   }
+
+  void refreshHome() async {
+    posts = [];
+    getPosts();
+  }
+
+  // void scrollChat(){
+  //     scroll.animateTo(
+  //                                     scroll.position.maxScrollExtent,
+  //                                       duration: Duration(milliseconds:1),
+  //                                       curve: Curves.easeInOut);
+  // }
 }

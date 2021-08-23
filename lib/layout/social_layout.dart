@@ -30,8 +30,7 @@ class SocialLayout extends StatelessWidget {
           appBar: AppBar(actions: [
             IconButton(
                 onPressed: () {
-                  SocialCubit.get(context).signout();
-                  SystemNavigator.pop();
+                  
                   // navigateAndFinish(context, SocialLoginScreen());
                 },
                 icon: Icon(IconBroken.Notification)),

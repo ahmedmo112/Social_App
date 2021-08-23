@@ -1,6 +1,9 @@
 // ignore_for_file: unnecessary_const
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:social_app/layout/cubit/socialCubit.dart';
@@ -17,6 +20,7 @@ class ChatDetailsScreen extends StatelessWidget {
     this.model,
   );
   var messageController = TextEditingController();
+  var scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,9 @@ class ChatDetailsScreen extends StatelessWidget {
                         child: Column(children: [
                           Expanded(
                             child: ListView.separated(
-                              physics: BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                controller: scrollController,
+                                physics: BouncingScrollPhysics(),
                                 itemBuilder: (context, index) {
                                   var message =
                                       SocialCubit.get(context).messsage[index];
@@ -64,6 +70,9 @@ class ChatDetailsScreen extends StatelessWidget {
                                     ),
                                 itemCount:
                                     SocialCubit.get(context).messsage.length),
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           Row(
                             children: [
@@ -91,13 +100,23 @@ class ChatDetailsScreen extends StatelessWidget {
                                 backgroundColor: defultColor,
                                 child: IconButton(
                                   onPressed: () {
-                                    SocialCubit.get(context).sendMessage(
-                                        text: messageController.text,
-                                        reciverId: model.uId.toString(),
-                                        dateTime: DateTime.now().toString());
-                                    
-                                      messageController.clear();
-                                    
+                                    if (messageController.text != '') {
+                                      SocialCubit.get(context).sendMessage(
+                                          text: messageController.text,
+                                          reciverId: model.uId.toString(),
+                                          dateTime: DateTime.now().toString());
+                                    }
+                                    messageController.clear();
+                                    if (SocialCubit.get(context)
+                                            .messsage
+                                            .length >
+                                        0) {
+                                      Timer(
+                                          Duration(milliseconds: 500),
+                                          () => scrollController.jumpTo(
+                                              scrollController
+                                                  .position.maxScrollExtent));
+                                    }
                                   },
                                   icon: Icon(
                                     IconBroken.Send,
@@ -138,7 +157,7 @@ class ChatDetailsScreen extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           decoration: BoxDecoration(
-              color: defultColor.withOpacity(0.2),
+              color: Colors.green.withOpacity(0.2),
               borderRadius: const BorderRadiusDirectional.only(
                 topEnd: const Radius.circular(10.0),
                 topStart: const Radius.circular(10.0),

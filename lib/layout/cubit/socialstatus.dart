@@ -44,6 +44,16 @@ class SocialLikePostErrorState extends SocialStates {
 
 }
 
+class SocialCommentPostSuccessState extends SocialStates {}
+
+class SocialCommentPostErrorState extends SocialStates {}
+
+class SocialGetCommentPostLoadingState extends SocialStates {}
+
+
+class SocialGetCommentPostSuccessState extends SocialStates {}
+
+class SocialGetCommentPostErrorState extends SocialStates {}
 
 
 class ChangeBottomNavState extends SocialStates{}
@@ -104,3 +114,6 @@ class SocialSendMessageErrorState extends SocialStates {}
 class SocialGetMessageSuccessState extends SocialStates {}
 
 class SocialGetMessageErrorState extends SocialStates {}
+
+class SocialRefreshvState extends SocialStates {}
+
