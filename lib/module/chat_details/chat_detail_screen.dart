@@ -43,34 +43,40 @@ class ChatDetailsScreen extends StatelessWidget {
                     ),
                     Text(model.name.toString(), style: TextStyle(fontSize: 16))
                   ])),
-              body: Conditional.single(
-                  context: context,
-                  conditionBuilder: (context) =>
-                      SocialCubit.get(context).messsage.length > 0,
-                  widgetBuilder: (context) => Padding(
+              body:  Padding(
                         padding: const EdgeInsets.all(20.0),
                         child: Column(children: [
-                          Expanded(
-                            child: ListView.separated(
-                                shrinkWrap: true,
-                                controller: scrollController,
-                                physics: BouncingScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  var message =
-                                      SocialCubit.get(context).messsage[index];
-                                  if (SocialCubit.get(context).userModel!.uId ==
-                                      message.senderId) {
-                                    return buildMyMesssage(message);
-                                  } else {
-                                    return buildSenderMesssage(message);
-                                  }
-                                },
-                                separatorBuilder: (context, index) => SizedBox(
-                                      height: 15,
-                                    ),
-                                itemCount:
-                                    SocialCubit.get(context).messsage.length),
-                          ),
+                          Conditional.single(
+                            context: context,
+                             conditionBuilder: (context)=> SocialCubit.get(context).messsage.length > 0,
+                              widgetBuilder: (context)=>  Expanded(
+                              child: ListView.separated(
+                                  shrinkWrap: true,
+                                  controller: scrollController,
+                                  physics: BouncingScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    var message =
+                                        SocialCubit.get(context).messsage[index];
+                                    if (SocialCubit.get(context).userModel!.uId ==
+                                        message.senderId) {
+                                      return buildMyMesssage(message);
+                                    } else {
+                                      return buildSenderMesssage(message);
+                                    }
+                                  },
+                                  separatorBuilder: (context, index) => SizedBox(
+                                        height: 15,
+                                      ),
+                                  itemCount:
+                                      SocialCubit.get(context).messsage.length),
+                            ),
+                               fallbackBuilder: (context)=>Center(
+                        child: CircularProgressIndicator(),
+                      )
+                               
+                               ),
+                          
+                          
                           SizedBox(
                             height: 10,
                           ),
@@ -128,10 +134,10 @@ class ChatDetailsScreen extends StatelessWidget {
                             ],
                           )
                         ]),
-                      ),
-                  fallbackBuilder: (context) => Center(
-                        child: CircularProgressIndicator(),
-                      )));
+          )
+                  // fallbackBuilder: (context) => 
+                      
+                      );
         },
       );
     });

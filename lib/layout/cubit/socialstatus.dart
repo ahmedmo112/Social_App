@@ -35,6 +35,12 @@ class SocialGetPostErrorState extends SocialStates {
 
 }
 
+class SocialDeletePostLoadingState extends SocialStates {}
+
+class SocialDeletePostSuccessState extends SocialStates {}
+
+class SocialDeletePostErrorState extends SocialStates {}
+
 class SocialLikePostSuccessState extends SocialStates {}
 
 class SocialLikePostErrorState extends SocialStates {

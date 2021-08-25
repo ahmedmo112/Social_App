@@ -341,7 +341,10 @@ class SocialCubit extends Cubit<SocialStates> {
 
   void getPosts() {
     emit(SocialGetPostLoadingState());
-
+    posts = [];
+    postID = [];
+    likes = [];
+    postCommentsNum = [];
     FirebaseFirestore.instance.collection('posts').get().then((value) {
       value.docs.forEach((element) {
         element.reference.collection('likes').get().then((valuelike) {
@@ -357,6 +360,21 @@ class SocialCubit extends Cubit<SocialStates> {
       emit(SocialGetPostSuccessState());
     }).catchError((e) {
       emit(SocialGetPostErrorState(e.toString()));
+    });
+  }
+
+  void deletePost({required String postId}) {
+    emit(SocialDeletePostLoadingState());
+    FirebaseFirestore.instance
+        .collection('posts')
+        .doc(postId)
+        .delete()
+        .then((value) {
+      //getPosts();
+      showToast(text: 'The post has been deleted', state: ToastStates.SUCCESS);
+      emit(SocialDeletePostSuccessState());
+    }).catchError((e) {
+      emit(SocialDeletePostErrorState());
     });
   }
 

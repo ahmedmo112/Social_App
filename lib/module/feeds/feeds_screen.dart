@@ -20,9 +20,7 @@ class FeedsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SocialCubit, SocialStates>(
-      listener: (context, state) {
-        
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Conditional.single(
             context: context,
@@ -51,7 +49,7 @@ class FeedsScreen extends StatelessWidget {
                                 image: NetworkImage(
                                     'https://image.freepik.com/free-photo/horizontal-shot-smiling-curly-haired-woman-indicates-free-space-demonstrates-place-your-advertisement-attracts-attention-sale-wears-green-turtleneck-isolated-vibrant-pink-wall_273609-42770.jpg'),
                                 fit: BoxFit.cover,
-                                height: 150,
+                                height: 170,
                                 width: double.infinity,
                               ),
                               Padding(
@@ -73,7 +71,8 @@ class FeedsScreen extends StatelessWidget {
                           itemBuilder: (context, index) => buildPostItem(
                               SocialCubit.get(context).posts[index],
                               context,
-                              index,state),
+                              index,
+                              state),
                           separatorBuilder: (context, index) => SizedBox(
                             height: 10,
                           ),
@@ -101,8 +100,8 @@ class FeedsScreen extends StatelessWidget {
     );
   }
 
-  Widget buildPostItem(PostModel model, context, int index,state) => Card(
-      elevation: 6.0,
+  Widget buildPostItem(PostModel model, context, int index, state) => Card(
+      elevation: 8.0,
       clipBehavior: Clip.antiAliasWithSaveLayer,
       margin: EdgeInsets.symmetric(horizontal: 8.0),
       child: Padding(
@@ -156,7 +155,34 @@ class FeedsScreen extends StatelessWidget {
                   width: 15,
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    print('pressed');
+                    showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                              title: Text(
+                                'Delete?',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              content: Text('Do you want to delete this post?'),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      SocialCubit.get(context).deletePost(
+                                          postId: SocialCubit.get(context).postID[index]);
+                                      Navigator.pop(context);
+
+
+                                    },
+                                    child: Text('Yes')),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text('No')),
+                              ],
+                            ));
+                  },
                   icon: Icon(
                     Icons.more_horiz,
                     size: 18.0,
@@ -280,7 +306,8 @@ class FeedsScreen extends StatelessWidget {
                             size: 17,
                             color: Colors.amber,
                           ),
-                          Text('${SocialCubit.get(context).postCommentsNum[index]} Comments',
+                          Text(
+                              '${SocialCubit.get(context).postCommentsNum[index]} Comments',
                               style: Theme.of(context).textTheme.caption)
                         ],
                       ),
@@ -302,17 +329,14 @@ class FeedsScreen extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     onTap: () {
-
                       SocialCubit.get(context).getcomments(
                           postId: SocialCubit.get(context).postID[index]);
-                         Timer(Duration(milliseconds: 500), ()=> 
-                       
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (context) =>
-                              buildCommentBottomSheet(context, index,state))
-                    )
-                     ;
+                      Timer(
+                          Duration(milliseconds: 500),
+                          () => showModalBottomSheet(
+                              context: context,
+                              builder: (context) => buildCommentBottomSheet(
+                                  context, index, state)));
                     },
                     child: Row(
                       children: [
@@ -356,7 +380,7 @@ class FeedsScreen extends StatelessWidget {
         ),
       ));
 
-  Widget buildCommentBottomSheet(context, index,state) => Container(
+  Widget buildCommentBottomSheet(context, index, state) => Container(
       height: 600,
       color: Color(0xFF737373),
       child: Container(
@@ -368,27 +392,22 @@ class FeedsScreen extends StatelessWidget {
                   topRight: const Radius.circular(30.0))),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
-            child:Column(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                
                 Expanded(
-                  child:
-                  SocialCubit.get(context).comments.length > 0?
-                  
-                
-            ListView.separated(
-                      physics: BouncingScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index)=> buildCommentbody(SocialCubit.get(context).comments[index]),
-                      separatorBuilder: (context, index) => SizedBox(
-                            height: 20,
-                          ),
-                      itemCount: SocialCubit.get(context).comments.length)
-                      :Container(
-                        width: 200,
-                        child: Center(child: Text('Empty')) )
-                ),
+                    child: SocialCubit.get(context).comments.length > 0
+                        ? ListView.separated(
+                            physics: BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) => buildCommentbody(
+                                SocialCubit.get(context).comments[index]),
+                            separatorBuilder: (context, index) => SizedBox(
+                                  height: 20,
+                                ),
+                            itemCount: SocialCubit.get(context).comments.length)
+                        : Container(
+                            width: 200, child: Center(child: Text('Empty')))),
                 SizedBox(
                   height: 10,
                 ),
@@ -435,40 +454,27 @@ class FeedsScreen extends StatelessWidget {
                 )
               ],
             ),
-              
-               )
-            
+          )));
+
+  Widget buildCommentbody(CommentModel model) => Row(
+        children: [
+          CircleAvatar(
+            radius: 25,
+            backgroundColor: Colors.grey[300],
+            backgroundImage: NetworkImage(model.image.toString()),
+          ),
+          SizedBox(
+            width: 10.0,
+          ),
+          Container(
+            width: 250,
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+            decoration: BoxDecoration(
+              color: defultColor.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(model.text.toString()),
           )
-             
-              
-              );
-
-
-              Widget buildCommentbody( CommentModel model)=> Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 25,
-                              backgroundColor: Colors.grey[300],
-                              backgroundImage: NetworkImage(
-                                 model
-                                      .image
-                                      .toString()),
-                            ),
-                            SizedBox(
-                              width: 10.0,
-                            ),
-                            Container(
-                              width: 250,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
-                              decoration: BoxDecoration(
-                                color: defultColor.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(model
-                                  .text
-                                  .toString()),
-                            )
-                          ],
-                        );
+        ],
+      );
 }
